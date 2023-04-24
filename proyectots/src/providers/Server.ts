@@ -1,5 +1,6 @@
 import express,{Request, Response} from 'express';
 import AbstractController from '../controllers/AbstractController';
+import db from '../models';
 
 
 class Server{
@@ -27,7 +28,12 @@ class Server{
         })
     }
 
-    public init(){
+    private async connectDB(){
+        await db.sequelize.sync({force:false})
+    }
+
+    public async init(){
+        await this.connectDB();
         this.app.listen(this.port,()=>{
             console.log(`Server::Running 🚀 😱 @'http://localhost:${this.port}'`);
         })
