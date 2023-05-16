@@ -16,4 +16,13 @@ const app = new Server({
     env:'development'
 });
 
+declare global{
+    namespace Express{
+        interface Request{
+            user:string;
+            token:string;
+        }
+    }
+}
+
 app.init();
