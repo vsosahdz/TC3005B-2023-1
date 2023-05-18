@@ -12,8 +12,9 @@ class Server{
         this.app = express();
         this.port =appInit.port;
         this.env = appInit.env;
-        this.loadControllers(appInit.controllers);
         this.loadMiddlewares(appInit.middlewares);
+        this.loadControllers(appInit.controllers);
+        
     }
 
     private loadControllers(controllers:AbstractController[]){

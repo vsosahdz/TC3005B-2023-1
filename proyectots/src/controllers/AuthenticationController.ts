@@ -1,7 +1,7 @@
 import { Request,Response } from "express";
 import { checkSchema } from "express-validator";
 import AbstractController from "./AbstractController";
-//import UserModel from '../modelsNOSQL/userNOSQL';
+import UserModel from '../modelsNOSQL/userNOSQL';
 import db from '../models';
 
 class AuthenticationController extends AbstractController{
