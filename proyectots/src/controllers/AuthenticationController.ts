@@ -35,6 +35,7 @@ class AuthenticationController extends AbstractController{
         const {email,password} = req.body;
         try{
             const login = await this.cognitoService.signInUser(email,password);
+            
             res.status(200).send({...login.AuthenticationResult});
         }catch(error:any){
             res.status(500).send({code:error.code,message:error.message}).end()
@@ -45,7 +46,9 @@ class AuthenticationController extends AbstractController{
         const{email,code} =req.body;
         try{
             await this.cognitoService.verifyUser(email,code);
+            
             return res.status(200).end();
+
         }catch(error:any){
             res.status(500).send({code:error.code,message:error.message}).end()
         }
@@ -61,6 +64,26 @@ class AuthenticationController extends AbstractController{
                     Value: email
                 }
             ])
+            //Guardar el usuario en DB NoSQL (DynamoDB)
+            await UserModel.create(
+                {
+                    awsCognitoId:user.UserSub,
+                    name,
+                    role,
+                    email
+                },
+                {overwrite:false}
+            )
+            console.log('Usuario guardado en BDNoSQL')
+            //Guard el usuario en DB relacional (MySQL)
+            await db['User'].create(
+                {
+                    awsCognitoId:user.UserSub,
+                    name,
+                    role,
+                    email
+                }
+            )
             console.log("Usuario de cognito creado",user);
             res.status(201).send({message:"User signedUp"})
         }catch(error:any){
