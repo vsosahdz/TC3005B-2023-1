@@ -25,6 +25,14 @@ class AuthenticationController extends AbstractController{
         this.router.post('/verify',this.verify.bind(this));
         this.router.post('/signin',this.signin.bind(this));
         this.router.get('/test',this.authMiddleware.verifyToken,this.test.bind(this));
+        this.router.get('/testtokenrole',
+                        this.authMiddleware.verifyToken,
+                        this.permissionMiddleware.checkIsAdmin,
+                        this.test2.bind(this));
+    }
+
+    private async test2(req:Request,res:Response){
+        res.status(200).send("Esto es una prueba de validación de token y rol");
     }
 
     private async test(req:Request,res:Response){
@@ -47,7 +55,7 @@ class AuthenticationController extends AbstractController{
         try{
             await this.cognitoService.verifyUser(email,code);
             
-            return res.status(200).end();
+            return res.status(200).send({message:"verified user"}).end();
 
         }catch(error:any){
             res.status(500).send({code:error.code,message:error.message}).end()
